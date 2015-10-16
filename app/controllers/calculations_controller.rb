@@ -30,6 +30,8 @@ class CalculationsController < ApplicationController
     @apr = params[:annual_percentage_rate].to_f
     @years = params[:number_of_years].to_i
     @principal = params[:principal_value].to_f
+    @months = @years*12
+    @e_rate = @apr/1200
 
     # ================================================================================
     # Your code goes below.
@@ -38,7 +40,7 @@ class CalculationsController < ApplicationController
     # The principal value the user input is in the decimal @principal.
     # ================================================================================
 
-    @monthly_payment = @principal*((@apr/100/12)/(1-(1+(@apr/100/12))**-@years*12))
+    @monthly_payment = @principal*(@e_rate+(@e_rate/(((1+@e_rate)**(@months))-1)))
 
     # ================================================================================
     # Your code goes above.
@@ -77,6 +79,7 @@ class CalculationsController < ApplicationController
   def descriptive_statistics
     @numbers = params[:list_of_numbers].gsub(',', '').split.map(&:to_f)
 
+
     # ================================================================================
     # Your code goes below.
     # The numbers the user input are in the array @numbers.
@@ -93,20 +96,22 @@ class CalculationsController < ApplicationController
     @range = @sorted_numbers.last-@sorted_numbers.first
     #@sorted_numbers.to_formatted_s
 
-    @median = "Replace this string with your answer."
+    @median = (@sorted_numbers[((@sorted_numbers.length-1)/2)]+@sorted_numbers[(@sorted_numbers.length/2)]) / 2
 
     @sum = @numbers.sum
 
     @mean = (@numbers.sum)/(@numbers.size)
 
-    @variance = if @sorted_numbers % 2
-    (@sorted_numbers.length+1)/2
-    else
-    @sorted_numbers.length/2+((sorted_numbers.length+2)/2)/2
+    sumsqrdiff=0
+    @numbers.each do |num|
+        sumsqrdiff += (num-@mean)**2
     end
-    #"Replace this string with your answer." #sum(@numbers.to_f-@mean)**2/@count
+    @variance = sumsqrdiff/@count
 
-    @standard_deviation = "Replace this string with your answer."
+
+    #This needs to be done as an each do
+
+    @standard_deviation =
 
     @mode = @sorted_numbers.uniq.max_by{ |i| @sorted_numbers.count( i ) }
 
