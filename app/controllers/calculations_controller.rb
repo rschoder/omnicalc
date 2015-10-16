@@ -111,7 +111,7 @@ class CalculationsController < ApplicationController
 
     #This needs to be done as an each do
 
-    @standard_deviation =
+    @standard_deviation = @variance**.5
 
     @mode = @sorted_numbers.uniq.max_by{ |i| @sorted_numbers.count( i ) }
 
